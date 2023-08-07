@@ -172,7 +172,26 @@ require("lazy").setup({
     -- nvtree
     { "nvim-tree/nvim-tree.lua" },
     { "nvim-tree/nvim-web-devicons" },
-    { "nvim-lualine/lualine.nvim" },
+
+    -- fancy status bar
+    {
+        "nvim-lualine/lualine.nvim",
+        config = function()
+            require('lualine').setup({
+                options = {
+                    theme = 'onedark',
+                    icons_enabled = true,
+                    component_separators = '|',
+                    section_separators = '',
+                    disabled_filetypes = {
+                        statusline = { 'NvimTree' }
+                    }
+                },
+            })
+        end
+    },
+
+    -- git status in gutter
     {
         "lewis6991/gitsigns.nvim",
         config = function()
@@ -187,6 +206,8 @@ require("lazy").setup({
             })
         end
     },
+
+    -- show indent lines
     {
         "lukas-reineke/indent-blankline.nvim",
         config = function()
@@ -199,6 +220,8 @@ require("lazy").setup({
             })
         end
     },
+
+    -- show tabs on top
     {
         "akinsho/bufferline.nvim",
         config = function()
@@ -224,18 +247,6 @@ require("lazy").setup({
 })
 
 vim.opt.showmode = false
-
-require('lualine').setup({
-    options = {
-        theme = 'onedark',
-        icons_enabled = true,
-        component_separators = '|',
-        section_separators = '',
-        disabled_filetypes = {
-            statusline = { 'NvimTree' }
-        }
-    },
-})
 
 require 'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all" (the five listed parsers should always be installed)
