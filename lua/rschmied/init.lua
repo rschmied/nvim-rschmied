@@ -31,7 +31,6 @@ require("lazy").setup({
             -- refer to the configuration section below
         }
     },
-    -- "folke/which-key.nvim",
     -- { "folke/neoconf.nvim", cmd = "Neoconf" },
     { "folke/neodev.nvim" },
 
@@ -49,6 +48,8 @@ require("lazy").setup({
             require("telescope").load_extension("fzf")
         end
     },
+
+    -- color themes
     { "catppuccin/nvim",  name = "catppuccin" },
     {
         "AlexvZyl/nordic.nvim",
@@ -58,11 +59,17 @@ require("lazy").setup({
         end
     },
     { "folke/tokyonight.nvim",           name = "tokyo" },
+
+    -- treesitter
     { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
     { "nvim-treesitter/playground" },
+
+    -- misc
     { "theprimeagen/harpoon" },
     { "mbbill/undotree" },
     { "tpope/vim-fugitive" },
+
+    -- LSP zero
     {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
