@@ -1,7 +1,7 @@
 -- Example using a list of specs with the default options
 vim.g.mapleader = " " -- Make sure to set `mapleader` before lazy so your mappings are correct
 
-vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle)
+vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "toggle NvimTree" })
 -- vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -27,7 +27,6 @@ vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 
 vim.keymap.set("n", "Q", "<nop>", { desc = "format code" })
 -- vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
-vim.keymap.set("n", "<A-f>", vim.lsp.buf.format)
 
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
@@ -51,4 +50,9 @@ vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
 
 vim.keymap.set("n", "<leader>gs", vim.cmd.Git, { desc = "fuGITive" })
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "undo tree toggle" })
+
+vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "code actions" })
+vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, { desc = "format code" })
+vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { desc = "rename symbol under cursor" })
+vim.keymap.set("n", "<leader>cs", vim.lsp.buf.signature_help, { desc = "signature help" })
 

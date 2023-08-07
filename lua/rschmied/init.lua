@@ -78,11 +78,88 @@ require("lazy").setup({
             { 'L3MON4D3/LuaSnip' },     -- Required
         }
     },
-    { "terrortylor/nvim-comment" },
+
+    -- code comment function
+    {
+        'numToStr/Comment.nvim',
+        config = function()
+            require('Comment').setup(
+                {
+                    ---Add a space b/w comment and the line
+                    padding = true,
+                    ---Whether the cursor should stay at its position
+                    sticky = true,
+                    ---Lines to be ignored while (un)comment
+                    ignore = nil,
+                    ---LHS of toggle mappings in NORMAL mode
+                    toggler = {
+                        ---Line-comment toggle keymap
+                        line = 'gcc',
+                        ---Block-comment toggle keymap
+                        block = 'gbc',
+                    },
+                    ---LHS of operator-pending mappings in NORMAL and VISUAL mode
+                    opleader = {
+                        ---Line-comment keymap
+                        line = 'gc',
+                        ---Block-comment keymap
+                        block = 'gb',
+                    },
+                    ---LHS of extra mappings
+                    extra = {
+                        ---Add comment on the line above
+                        above = 'gcO',
+                        ---Add comment on the line below
+                        below = 'gco',
+                        ---Add comment at the end of line
+                        eol = 'gcA',
+                    },
+                    ---Enable keybindings
+                    ---NOTE: If given `false` then the plugin won't create any mappings
+                    mappings = {
+                        ---Operator-pending mapping; `gcc` `gbc` `gc[count]{motion}` `gb[count]{motion}`
+                        basic = true,
+                        ---Extra mapping; `gco`, `gcO`, `gcA`
+                        extra = true,
+                    },
+                    ---Function to call before (un)comment
+                    pre_hook = nil,
+                    ---Function to call after (un)comment
+                    post_hook = nil,
+                })
+        end
+    },
+
+    -- nvchad terminal
     {
         "NvChad/nvterm",
         config = function()
-            require("nvterm").setup()
+            require("nvterm").setup({
+                terminals = {
+                    shell = vim.o.shell,
+                    list = {},
+                    type_opts = {
+                        float = {
+                            relative = 'editor',
+                            row = 0.3,
+                            col = 0.25,
+                            width = 0.5,
+                            height = 0.4,
+                            border = "single",
+                        },
+                        horizontal = { location = "rightbelow", split_ratio = .3, },
+                        vertical = { location = "rightbelow", split_ratio = .5 },
+                    }
+                },
+                behavior = {
+                    autoclose_on_quit = {
+                        enabled = false,
+                        confirm = true,
+                    },
+                    close_on_exit = true,
+                    auto_insert = true,
+                },
+            })
         end,
     },
     -- nvtree
@@ -195,12 +272,16 @@ require 'nvim-treesitter.configs'.setup {
     },
 }
 
+-- LSP Zero specific
 local lsp = require('lsp-zero').preset({})
 
 lsp.on_attach(function(client, bufnr)
     -- see :help lsp-zero-keybindings
     -- to learn the available actions
-    lsp.default_keymaps({ buffer = bufnr })
+    lsp.default_keymaps({
+        buffer = bufnr,
+        preserve_mappings = true
+    })
 end)
 
 -- (Optional) Configure lua language server for neovim
@@ -208,25 +289,22 @@ require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
 lsp.setup()
 
+-- You need to setup `cmp` after lsp-zero
+local cmp = require('cmp')
+local cmp_action = require('lsp-zero').cmp_action()
 
-require('nvim_comment').setup({
-    -- Linters prefer comment and line to have a space in between markers
-    marker_padding = true,
-    -- should comment out empty or whitespace only lines
-    comment_empty = true,
-    -- trim empty comment whitespace
-    comment_empty_trim_whitespace = true,
-    -- Should key mappings be created
-    create_mappings = true,
-    -- Normal mode mapping left hand side
-    line_mapping = "gcc",
-    -- Visual/Operator mapping left hand side
-    operator_mapping = "gc",
-    -- text object mapping, comment chunk,,
-    comment_chunk_text_object = "ic",
-    -- Hook function to call before commenting takes place
-    hook = nil
+cmp.setup({
+    mapping = {
+        -- `Enter` key to confirm completion
+        ['<CR>'] = cmp.mapping.confirm({ select = false }),
+
+        -- Ctrl+Space to trigger completion menu
+        ['<C-Space>'] = cmp.mapping.complete(),
+
+        -- Navigate between snippet placeholder
+        ['<C-f>'] = cmp_action.luasnip_jump_forward(),
+        ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+    }
 })
-
 
 print("hello")
