@@ -1,6 +1,8 @@
 require("rschmied.set")
 require("rschmied.remap")
 
+-- https://vonheikemen.github.io/devlog/tools/neovim-plugins-to-get-started/
+
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -31,14 +33,23 @@ require("lazy").setup({
     },
     -- "folke/which-key.nvim",
     -- { "folke/neoconf.nvim", cmd = "Neoconf" },
-    "folke/neodev.nvim",
+    { "folke/neodev.nvim" },
 
+    -- Telescpe related
     {
         "nvim-telescope/telescope.nvim",
         version = "0.1.2",
         dependencies = { { "nvim-lua/plenary.nvim" } }
     },
-    { "catppuccin/nvim",                 name = "catppuccin" },
+    {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build =
+        'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+        config = function()
+            require("telescope").load_extension("fzf")
+        end
+    },
+    { "catppuccin/nvim",  name = "catppuccin" },
     {
         "AlexvZyl/nordic.nvim",
         name = "nordic",
@@ -77,7 +88,69 @@ require("lazy").setup({
     -- nvtree
     { "nvim-tree/nvim-tree.lua" },
     { "nvim-tree/nvim-web-devicons" },
+    { "nvim-lualine/lualine.nvim" },
+    {
+        "lewis6991/gitsigns.nvim",
+        config = function()
+            require('gitsigns').setup({
+                signs = {
+                    add = { text = '▎' },
+                    change = { text = '▎' },
+                    delete = { text = '➤' },
+                    topdelete = { text = '➤' },
+                    changedelete = { text = '▎' },
+                }
+            })
+        end
+    },
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        config = function()
+            require('indent_blankline').setup({
+                char = '▏',
+                show_trailing_blankline_indent = false,
+                show_first_indent_level = true,
+                use_treesitter = true,
+                show_current_context = true
+            })
+        end
+    },
+    {
+        "akinsho/bufferline.nvim",
+        config = function()
+            require('bufferline').setup({
+                options = {
+                    mode = 'buffers',
+                    offsets = {
+                        { filetype = 'NvimTree' }
+                    },
+                },
+                highlights = {
+                    buffer_selected = {
+                        italic = false
+                    },
+                    indicator_selected = {
+                        fg = { attribute = 'fg', highlight = 'Function' },
+                        italic = false
+                    }
+                }
+            })
+        end
+    },
+})
 
+vim.opt.showmode = false
+
+require('lualine').setup({
+    options = {
+        theme = 'onedark',
+        icons_enabled = true,
+        component_separators = '|',
+        section_separators = '',
+        disabled_filetypes = {
+            statusline = { 'NvimTree' }
+        }
+    },
 })
 
 require 'nvim-treesitter.configs'.setup {
