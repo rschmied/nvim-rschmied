@@ -50,7 +50,7 @@ require("lazy").setup({
     },
 
     -- color themes
-    { "catppuccin/nvim",  name = "catppuccin" },
+    { "catppuccin/nvim",  lazy = true, name = "catppuccin" },
     {
         "AlexvZyl/nordic.nvim",
         name = "nordic",
@@ -58,21 +58,22 @@ require("lazy").setup({
             vim.cmd("colorscheme nordic")
         end
     },
-    { "folke/tokyonight.nvim",           name = "tokyo" },
+    { "folke/tokyonight.nvim",           lazy = true,        name = "tokyo" },
 
     -- treesitter
     { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-    { "nvim-treesitter/playground" },
+    { "nvim-treesitter/playground",      lazy = true },
 
     -- misc
-    { "theprimeagen/harpoon" },
-    { "mbbill/undotree" },
-    { "tpope/vim-fugitive" },
+    { "theprimeagen/harpoon",            lazy = true },
+    { "mbbill/undotree",                 lazy = false },
+    { "tpope/vim-fugitive",              lazy = false },
 
     -- LSP zero
     {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
+        lazy = true,
         dependencies = {
             -- LSP Support
             { 'neovim/nvim-lspconfig' },             -- Required
@@ -89,6 +90,7 @@ require("lazy").setup({
     -- code comment function
     {
         'numToStr/Comment.nvim',
+        lazy = true,
         config = function()
             require('Comment').setup(
                 {
@@ -140,6 +142,7 @@ require("lazy").setup({
     -- nvchad terminal
     {
         "NvChad/nvterm",
+        lazy = true,
         config = function()
             require("nvterm").setup({
                 terminals = {
@@ -170,12 +173,13 @@ require("lazy").setup({
         end,
     },
     -- nvtree
-    { "nvim-tree/nvim-tree.lua" },
-    { "nvim-tree/nvim-web-devicons" },
+    -- { "nvim-tree/nvim-tree.lua",     lazy = true },
+    -- { "nvim-tree/nvim-web-devicons", lazy = true },
 
     -- fancy status bar
     {
         "nvim-lualine/lualine.nvim",
+        lazy = false,
         config = function()
             require('lualine').setup({
                 options = {
@@ -194,6 +198,7 @@ require("lazy").setup({
     -- git status in gutter
     {
         "lewis6991/gitsigns.nvim",
+        lazy = false,
         config = function()
             require('gitsigns').setup({
                 signs = {
@@ -210,6 +215,7 @@ require("lazy").setup({
     -- show indent lines
     {
         "lukas-reineke/indent-blankline.nvim",
+        lazy = false,
         config = function()
             require('indent_blankline').setup({
                 char = '▏',
@@ -229,7 +235,7 @@ require("lazy").setup({
                 options = {
                     mode = 'buffers',
                     offsets = {
-                        { filetype = 'NvimTree' }
+                        { filetype = 'neo-tree' }
                     },
                 },
                 highlights = {
@@ -244,6 +250,21 @@ require("lazy").setup({
             })
         end
     },
+
+    -- filesystem explorer
+    {
+        "nvim-neo-tree/neo-tree.nvim",
+        keys = {
+            { "<leader>ft", "<cmd>Neotree toggle<cr>", desc = "NeoTree" },
+        },
+        lazy = true,
+        branch = "v3.x",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+            "MunifTanjim/nui.nvim",
+        }
+    }
 })
 
 vim.opt.showmode = false
