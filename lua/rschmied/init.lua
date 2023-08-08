@@ -34,6 +34,54 @@ require("lazy").setup({
     -- { "folke/neoconf.nvim", cmd = "Neoconf" },
     { "folke/neodev.nvim" },
 
+    -- UI window dressing
+    --[[ {
+        "stevearc/dressing.nvim",
+        lazy = false,
+        init = function()
+            ---@diagnostic disable-next-line: duplicate-set-field
+            vim.ui.select = function(...)
+                require("lazy").load({ plugins = { "dressing.nvim" } })
+                return vim.ui.select(...)
+            end
+            ---@diagnostic disable-next-line: duplicate-set-field
+            vim.ui.input = function(...)
+                require("lazy").load({ plugins = { "dressing.nvim" } })
+                return vim.ui.input(...)
+            end
+        end,
+    }, ]]
+
+    -- session management
+    {
+        "folke/persistence.nvim",
+        event = "BufReadPre", -- this will only start session saving when an actual file was opened
+        opts = {
+            -- add any custom options here
+            options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" }
+        },
+        keys = {
+            {
+                -- restore the session for the current directory
+                "<leader>qs",
+                "[[<cmd>lua require('persistence').load()<cr>]]",
+                desc = "load session for current dir"
+            },
+            {
+                -- restore the last session
+                "<leader>ql",
+                "[[<cmd>lua require('persistence').load({ last = true })<cr>]]",
+                desc = "restore the last session"
+            },
+            {
+                -- stop Persistence => session won't be saved on exit
+                "<leader>qd",
+                "[[<cmd>lua require('persistence').stop()<cr>]]",
+                desc = "stop persistence, no session save"
+            },
+        }
+    },
+
     -- Telescpe related
     {
         "nvim-telescope/telescope.nvim",
@@ -90,7 +138,7 @@ require("lazy").setup({
     -- code comment function
     {
         'numToStr/Comment.nvim',
-        lazy = true,
+        lazy = false,
         config = function()
             require('Comment').setup(
                 {
@@ -233,9 +281,22 @@ require("lazy").setup({
         config = function()
             require('bufferline').setup({
                 options = {
+                    -- diagnostics = "nvim_lsp",
+
                     mode = 'buffers',
+                    -- diagnostics_indicator = function(_, _, diag)
+                    --     local icons = require("lazyvim.config").icons.diagnostics
+                    --     local ret = (diag.error and icons.Error .. diag.error .. " " or "")
+                    --         .. (diag.warning and icons.Warn .. diag.warning or "")
+                    --     return vim.trim(ret)
+                    -- end,
                     offsets = {
-                        { filetype = 'neo-tree' }
+                        {
+                            filetype = "neo-tree",
+                            text = "Neo-tree",
+                            highlight = "Directory",
+                            text_align = "left",
+                        },
                     },
                 },
                 highlights = {
@@ -263,6 +324,28 @@ require("lazy").setup({
             "nvim-lua/plenary.nvim",
             "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
             "MunifTanjim/nui.nvim",
+        },
+        opts = {
+            sources = { "filesystem", "buffers", "git_status", "document_symbols" },
+            open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "Outline" },
+            filesystem = {
+                bind_to_cwd = false,
+                follow_current_file = { enabled = true },
+                use_libuv_file_watcher = true,
+            },
+            window = {
+                mappings = {
+                    ["<space>"] = "none",
+                },
+            },
+            default_component_configs = {
+                indent = {
+                    with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+                    expander_collapsed = "",
+                    expander_expanded = "",
+                    expander_highlight = "NeoTreeExpander",
+                },
+            },
         }
     }
 })
